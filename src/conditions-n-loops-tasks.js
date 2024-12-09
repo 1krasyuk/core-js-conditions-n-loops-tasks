@@ -240,7 +240,7 @@ function isPalindrome(str) {
  *  'qwerty', 'p'     => -1
  */
 function getIndexOf(str, letter) {
-  for (let i = 0; i < str.length; i = +1) {
+  for (let i = 0; i < str.length; i += 1) {
     if (str[i] === letter) {
       return i;
     }
@@ -325,34 +325,42 @@ function getBalanceIndex(arr) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(originalMatrix) {
-  const n = originalMatrix.length;
-
-  const matrix = [];
-  for (let i = 0; i < n; i += 1) {
-    matrix[i] = [];
-    for (let j = 0; j < n; j += 1) {
-      matrix[i][j] = originalMatrix[i][j];
+function getSpiralMatrix(size) {
+  const result = [];
+  let startColumn = 0;
+  let endColumn = size - 1;
+  let startRow = 0;
+  let endRow = size - 1;
+  let step = 1;
+  for (let i = 0; i < size; i += 1) {
+    result[i] = [];
+    for (let j = 0; j < size; j += 1) {
+      result[i][j] = 0;
     }
   }
-
-  for (let i = 0; i < n / 2; i += 1) {
-    for (let j = 0; j < n; j += 1) {
-      const temp = matrix[i][j];
-      matrix[i][j] = matrix[n - 1 - i][j];
-      matrix[n - 1 - i][j] = temp;
+  while (startRow <= endRow && startColumn <= endColumn) {
+    for (let i = startColumn; i <= endColumn; i += 1) {
+      result[startRow][i] = step;
+      step += 1;
     }
-  }
-
-  for (let i = 0; i < n; i += 1) {
-    for (let j = i + 1; j < n; j += 1) {
-      const temp = matrix[i][j];
-      matrix[i][j] = matrix[j][i];
-      matrix[j][i] = temp;
+    startRow += 1;
+    for (let i = startRow; i <= endRow; i += 1) {
+      result[i][endColumn] = step;
+      step += 1;
     }
+    endColumn -= 1;
+    for (let i = endColumn; i >= startColumn; i -= 1) {
+      result[endRow][i] = step;
+      step += 1;
+    }
+    endRow -= 1;
+    for (let i = endRow; i >= startRow; i -= 1) {
+      result[i][startColumn] = step;
+      step += 1;
+    }
+    startColumn += 1;
   }
-
-  return matrix;
+  return result;
 }
 
 /**
@@ -370,34 +378,24 @@ function getSpiralMatrix(originalMatrix) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(originalMatrix) {
-  const n = originalMatrix.length;
-
-  const matrix = [];
-  for (let i = 0; i < n; i += 1) {
-    matrix[i] = [];
-    for (let j = 0; j < n; j += 1) {
-      matrix[i][j] = originalMatrix[i][j];
-    }
-  }
-
+function rotateMatrix(matrix) {
+  const n = matrix.length;
+  const m = matrix;
+  let t;
   for (let i = 0; i < n / 2; i += 1) {
-    for (let j = 0; j < n; j += 1) {
-      const temp = matrix[i][j];
-      matrix[i][j] = matrix[n - 1 - i][j];
-      matrix[n - 1 - i][j] = temp;
+    for (let j = 0; j < n - i - i - 1; j += 1) {
+      t = m[i + j][n - 1 - i];
+      m[i + j][n - 1 - i] = m[i][i + j];
+      m[i][i + j] = t;
+      t = m[n - 1 - i][n - 1 - i - j];
+      m[n - 1 - i][n - 1 - i - j] = m[i][i + j];
+      m[i][i + j] = t;
+      t = m[n - 1 - i - j][i];
+      m[n - 1 - i - j][i] = m[i][i + j];
+      m[i][i + j] = t;
     }
   }
-
-  for (let i = 0; i < n; i += 1) {
-    for (let j = i + 1; j < n; j += 1) {
-      const temp = matrix[i][j];
-      matrix[i][j] = matrix[j][i];
-      matrix[j][i] = temp;
-    }
-  }
-
-  return matrix;
+  return m;
 }
 
 /**
